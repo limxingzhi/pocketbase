@@ -9,8 +9,6 @@
     container_name: pocketbase
     volumes:
       - /volume1/docker/pocketbase_pb_data:/pb/pb_data
-    networks:
-      - n8n_net
 ```
 
 ## Reference
