@@ -45,4 +45,4 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ steps.date.outputs.date }}
-            ghcr.io/${{ github.repository }}:0.33.0
+            ghcr.io/${{ github.repository }}:0.34.0
