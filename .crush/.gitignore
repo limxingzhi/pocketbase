@@ -1,0 +1,5 @@
+*
+!.gitignore
+!crush.json
+!skills/
+!skills/**/*

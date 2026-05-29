@@ -1,0 +1,9 @@
+{
+  "skills": [
+    {
+      "name": "upgrade-version",
+      "description": "Bump the project version across Dockerfile and deploy.yaml. Triggered by: \"bump version\", \"upgrade version\", \"release X.Y.Z\", \"bumped to\".",
+      "location": "skills/upgrade-version/SKILL.md"
+    }
+  ]
+}
