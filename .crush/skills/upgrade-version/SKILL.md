@@ -15,9 +15,11 @@ Bump the project version across all files. The PocketBase deployment repo (`/roo
 
 ### 1. Figure out the new version
 
-If the user didn't specify a version, search for the latest stable version on pocketbase's github release page and upgrade to that by default
+If the user didn't specify a version, run the `latest-version.sh` script to fetch the latest stable version programmatically from the GitHub API:
 
-1. release page - https://github.com/pocketbase/pocketbase/releases
+```bash
+./latest-version.sh
+```
 
 ### 2. Update `Dockerfile`
 
