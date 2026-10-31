@@ -1,7 +1,7 @@
 FROM alpine:latest
 
-ARG PB_VERSION=0.41.0
-ARG PB_RELEASE_ID=7vo1mkjw049veng
+ARG PB_VERSION=0.41.1
+ARG PB_RELEASE_ID=e3kqqtxbejo4gmo
 
 # RUN apk add --no-cache \
 #     unzip \
