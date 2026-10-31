@@ -1,7 +1,23 @@
 #!/bin/sh
-# Fetches the latest stable PocketBase release version from GitHub.
+# Fetches the latest stable PocketBase release from ganigeorgiev.com.
+# Prints "<version> <release-record-id>".
 set -e
 
-# Use GitHub API to get latest release tag, strip the "v" prefix
-curl -sfL https://api.github.com/repos/pocketbase/pocketbase/releases/latest |
-  sed -n 's/.*"tag_name":\s*"v\([^"]*\)".*/\1/p'
+BASE_URL="https://ganigeorgiev.com"
+
+response=$(curl -sfL --get "$BASE_URL/api/collections/releases/records" \
+  --data-urlencode "perPage=1" \
+  --data-urlencode "skipTotal=1" \
+  --data-urlencode "sort=-semver" \
+  --data-urlencode "fields=id,tag" \
+  --data-urlencode 'filter=channel.name="default" && channel.repository.name="pocketbase" && channel.repository.project.name="pocketbase"')
+
+version=$(printf '%s' "$response" | sed -n 's/.*"tag":"v\?\([^"]*\)".*/\1/p')
+release_id=$(printf '%s' "$response" | sed -n 's/.*"id":"\([^"]*\)".*/\1/p')
+
+if [ -z "$version" ] || [ -z "$release_id" ]; then
+  echo "failed to parse release metadata: $response" >&2
+  exit 1
+fi
+
+printf '%s %s\n' "$version" "$release_id"

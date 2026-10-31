@@ -1,13 +1,14 @@
 FROM alpine:latest
 
-ARG PB_VERSION=0.40.6
+ARG PB_VERSION=0.41.1
+ARG PB_RELEASE_ID=e3kqqtxbejo4gmo
 
 # RUN apk add --no-cache \
 #     unzip \
 #     ca-certificates
 
 # download and unzip PocketBase
-ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip /tmp/pb.zip
+ADD https://ganigeorgiev.com/api/files/releases/${PB_RELEASE_ID}/pocketbase_${PB_VERSION}_linux_amd64.zip /tmp/pb.zip
 RUN unzip /tmp/pb.zip -d /pb/
 
 # uncomment to copy the local pb_migrations dir into the image

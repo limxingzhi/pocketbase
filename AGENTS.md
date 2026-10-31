@@ -6,18 +6,38 @@ Thin wrapper that downloads a [PocketBase](https://pocketbase.io/) release binar
 
 | File | Purpose |
 |---|---|
-| `Dockerfile` | `ADD` (auto-unpacks) the official zip from GitHub releases |
+| `Dockerfile` | `ADD` (auto-unpacks) the official zip from ganigeorgiev.com |
 | `.github/workflows/deploy.yaml` | CI/CD: multi-arch build + push to ghcr.io on push to `main` |
 | `.crush/skills/upgrade-version/SKILL.md` | Crush skill to automate version bumps |
 
 ## Version management
 
-Version lives in **two places** that must stay in sync:
+Releases are published on `https://ganigeorgiev.com/pocketbase/pocketbase/releases`
+(the GitHub releases stopped at 0.40.6). Release files are served from
+`/api/files/releases/<record-id>/<filename>`, so the release record id is part of
+the version pin.
 
-1. `Dockerfile` — `ARG PB_VERSION=<semver>` (drives the download URL)
-2. `deploy.yaml` — Docker tag `ghcr.io/<repo>:<semver>`
+Version lives in **three places** that must stay in sync:
+
+1. `Dockerfile` — `ARG PB_VERSION=<semver>` (filename in the download URL)
+2. `Dockerfile` — `ARG PB_RELEASE_ID=<release-record-id>` (path in the download URL)
+3. `deploy.yaml` — Docker tag `ghcr.io/<repo>:<semver>`
 
 Commit pattern: `bumped to X.Y.Z`
+
+To resolve the latest pair, query the release API:
+
+```bash
+curl -sfL --get https://ganigeorgiev.com/api/collections/releases/records \
+  --data-urlencode 'perPage=1' \
+  --data-urlencode 'skipTotal=1' \
+  --data-urlencode 'sort=-semver' \
+  --data-urlencode 'fields=id,tag' \
+  --data-urlencode 'filter=channel.name="default" && channel.repository.name="pocketbase" && channel.repository.project.name="pocketbase"'
+```
+
+Or run `.crush/skills/upgrade-version/latest-version.sh`, which prints
+`<version> <record-id>`.
 
 ## CI/CD
 
@@ -35,6 +55,8 @@ docker run -p 8080:8080 pocketbase:local
 
 ## Gotchas
 
-- Changing only the tag in `deploy.yaml` without updating `ARG PB_VERSION` will pull a different binary than the tag suggests
+- Changing only the tag in `deploy.yaml` without updating the Dockerfile args will pull a different binary than the tag suggests
+- A mismatched `ARG PB_RELEASE_ID` fails the build or, worse, silently points at a different release record; always bump it with `PB_VERSION`
+- The `ADD` is hardcoded to `linux_amd64` even though CI builds `linux/amd64,linux/arm64`, so the arm64 image ships an amd64 binary
 - The date tag (`%Y.%m.%d`) is computed fresh each CI run — not committed
 - `.crush/` is gitignored except `crush.json` and `skills/`
