@@ -57,10 +57,10 @@ Replace the old version tag with the new one on the Docker tag line.
 
 Commit with the standard message format: `bumped to <newversion>`
 
-Use `git commit -am 'bumped to X.Y.Z'` with the proper attribution footer, for example:
+Use `git commit -am 'bumped to X.Y.Z'`, for example:
 
 ```
-git commit -am "bumped to 0.41.1" -m "💘 Generated with Crush" -m "Assisted-by: Crush:deepseek-v4-flash"
+git commit -am "bumped to 0.41.1"
 ```
 
 ## Validation checklist
